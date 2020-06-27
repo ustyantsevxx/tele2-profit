@@ -1,30 +1,16 @@
 import requests
-from json import dumps
+from json import load
 
-NUMBER = '79044979272'
+with open('config.json', 'r') as f:
+    obj = load(f)
+    NUMBER, TOKEN = obj['number'], obj['token']
+
+rs = requests.Session()
+rs.headers.update({'Authorization': f'Bearer {TOKEN}'})
 
 base_api = f'https://tyumen.tele2.ru/api/subscribers/{NUMBER}'
 market_api = f'{base_api}/exchange/lots/created'
 rests_api = f'{base_api}/siteTYUMEN/rests'
-
-
-def read_token():
-    try:
-        f = open("token.txt", "r")
-        tok = f.readline()
-        f.close()
-        return tok
-    except IOError:
-        return False
-
-
-def create_autorized_session():
-    session = requests.Session()
-    session.headers.update({'Authorization': f'Bearer {read_token()}'})
-    return session
-
-
-rs = create_autorized_session()
 
 
 def return_lot(lot_id):
