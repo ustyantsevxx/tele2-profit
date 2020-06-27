@@ -1,9 +1,10 @@
-# tele2-profit
+# Tele2 Profit
+Script allows you to quickly sell your Tele2 data. Firstly, it returns all your listings from Tele2 Market. Then it list all data with minimal price + applies emojis and shit for faster selling.
 
-### Script allows you to quickly sell your Tele2 data.
+## Installation
+Activate **venv** if needed and `pip install -r requirements.txt` 
 
-0. Activate venv if needed and `pip install -r requirements.txt` 
-
+## Usage
 1. Create `config.json` file with number:
 ```json
 {
@@ -11,5 +12,4 @@
 }
 ```
 2. Run `gettoken.py` and enter SMS-code sent by Tele2.
-
 3. Run `main.py` and get shit done.
