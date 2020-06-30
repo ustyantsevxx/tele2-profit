@@ -13,3 +13,4 @@ Activate **venv** if needed and `pip install -r requirements.txt`
 ```
 2. Run `gettoken.py` and enter SMS-code sent by Tele2.
 3. Run `main.py` and get shit done.
+**fyi: token saves only on your pc and wont be sent to me) you can check script to be sure** 
