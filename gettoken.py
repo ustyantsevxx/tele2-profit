@@ -1,9 +1,6 @@
 import asyncio
 from aiohttp import ClientSession
 from json import load, dump
-from colorama import init, Fore
-
-init()
 
 
 async def main():
@@ -14,10 +11,10 @@ async def main():
     auth_post_url = 'https://my.tele2.ru/auth/realms/tele2-b2c/protocol/openid-connect/token'
 
     async with ClientSession() as sess:
-        print(Fore.LIGHTGREEN_EX + 'sending SMS...')
+        print('sending SMS...')
         await sess.post(sms_post_url, json={"sender": "Tele2"})
         code = input('SMS code: ')
-        print(Fore.CYAN + 'recieving token...')
+        print('recieving token...')
         response = await sess.post(auth_post_url,
                                    data={"client_id": "digital-suite-web-app",
                                          "grant_type": "password",
@@ -25,14 +22,14 @@ async def main():
                                          "password": code,
                                          "password_type": "sms_code"})
         token = (await response.json())['access_token']
-        print(Fore.GREEN + 'token recieved')
+        print('token recieved')
 
     with open('config.json', 'w') as f:
         dump({'number': number, 'token': token}, f)
-    print(Fore.Red + 'token saved to config.json')
+    print('token saved to config.json')
 
 
 future = asyncio.ensure_future(main())
 asyncio.get_event_loop().run_until_complete(future)
 
-print(Fore.MAGENTA + 'Script terminated.')
+print('Script terminated.')

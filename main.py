@@ -1,9 +1,7 @@
 import asyncio
 from aiohttp import ClientSession
 from json import load, dumps
-from colorama import init, Fore
 
-init()
 
 with open('config.json', 'r') as f:
     obj = load(f)
@@ -15,27 +13,27 @@ rests_api = f'{base_api}/siteTYUMEN/rests'
 
 
 async def return_lot(sess, lot_id):
-    print(Fore.CYAN + f'deleting {lot_id}...')
+    print(f'deleting {lot_id}...')
     await sess.delete(f'{market_api}/{lot_id}')
-    print(Fore.GREEN + f'{lot_id} deleted')
+    print(f'{lot_id} deleted')
 
 
 async def sell_minutes(sess, amount, price):
-    print(Fore.CYAN + f'listing {amount} for {price} rub...')
+    print(f'listing {amount} for {price} rub...')
     resp = await sess.put(market_api, json={
         "trafficType": "voice",
         "cost": {"amount": price, "currency": "rub"},
         "volume": {"value": amount, "uom": "min"}
     })
-    print(Fore.GREEN + 'listed')
+    print('listed')
     lot_id = (await resp.json())['data']['id']
-    print(Fore.YELLOW + f'patching {lot_id}...')
+    print(f'patching {lot_id}...')
     resp = await sess.patch(f'{market_api}/{lot_id}', json={
         "cost": {"amount": price, "currency": "rub"},
         'showSellerName': True,
         "emojis": ["bomb", "devil", "scream"]
     })
-    print(Fore.BLUE + f'{lot_id} PATCHED!')
+    print(f'{lot_id} PATCHED!')
     return await resp.json()
 
 
@@ -70,4 +68,4 @@ async def main():
 future = asyncio.ensure_future(main())
 asyncio.get_event_loop().run_until_complete(future)
 
-print(Fore.MAGENTA + 'Script terminated.')
+print('Script terminated.')
