@@ -58,7 +58,7 @@ def save_config(phone_number: str, access_token: str):
             'number': phone_number,
             'token': access_token,
             'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        }, f)
+        }, f, indent=2)
     print(Fore.YELLOW + 'Token saved to ' + Fore.BLUE + 'config.json')
 
 

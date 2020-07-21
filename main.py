@@ -155,17 +155,13 @@ def prepare_old_lots(old_lots: list):
 
 
 async def apply_emojis(api: Tele2Api, lots: list):
-    try:
-        tasks = []
-        print(json.dumps(lots, indent=2))
-        for lot in lots:
-            task = asyncio.ensure_future(
-                api.apply_emojis(lot['data']['id'],
-                                 int(lot['data']['cost']['amount'])))
-            tasks.append(task)
-        await asyncio.gather(*tasks)
-    except:
-        pass
+    tasks = []
+    for lot in lots:
+        task = asyncio.ensure_future(
+            api.apply_emojis(lot['data']['id'],
+                             int(lot['data']['cost']['amount'])))
+        tasks.append(task)
+    await asyncio.gather(*tasks)
 
 
 async def sell_prepared_lots(api: Tele2Api, lots: list):
@@ -175,8 +171,12 @@ async def sell_prepared_lots(api: Tele2Api, lots: list):
         tasks.append(task)
     print('Listing...')
     lots = await asyncio.gather(*tasks)
-    print(Fore.BLUE + 'Lots listed to sell.')
-    await apply_emojis(api, lots)
+    if any(lot['meta']['status'] == "bp_err_limDay" for lot in lots):
+        print(
+            Fore.MAGENTA + 'Day listing limit (100) reached. Try again tomorrow.')
+    else:
+        print(Fore.BLUE + 'Lots have been listed to sell.')
+        await apply_emojis(api, lots)
 
 
 async def main():

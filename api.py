@@ -50,11 +50,15 @@ class Tele2Api:
         return await response.json()
 
     async def apply_emojis(self, lot_id, lot_price):
-        return await self.session.patch(f'{self.market_api}/{lot_id}', json={
-            'cost': {'amount': lot_price, 'currency': 'rub'},
+        response = await self.session.patch(f'{self.market_api}/{lot_id}', json=
+        {
+            'cost': {'amount': lot_price,
+                     'currency': 'rub'},
             'showSellerName': True,
-            'emojis': ['bomb', 'devil', 'scream']
+            'emojis': ['bomb', 'devil',
+                       'scream']
         })
+        return await response.json()
 
     async def return_lot(self, lot_id):
         response = await self.session.delete(f'{self.market_api}/{lot_id}')
