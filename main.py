@@ -1,70 +1,222 @@
 import asyncio
-from aiohttp import ClientSession
-from json import load, dumps
+import json
+import math
+import re
+from datetime import datetime, timedelta
+
+import inquirer as console
+from colorama import init as colorama_init, Fore
+from api import Tele2Api
 
 
-with open('config.json', 'r') as f:
-    obj = load(f)
-    NUMBER, TOKEN = obj['number'], obj['token']
-
-base_api = f'https://tyumen.tele2.ru/api/subscribers/{NUMBER}'
-market_api = f'{base_api}/exchange/lots/created'
-rests_api = f'{base_api}/siteTYUMEN/rests'
-
-
-async def return_lot(sess, lot_id):
-    print(f'deleting {lot_id}...')
-    await sess.delete(f'{market_api}/{lot_id}')
-    print(f'{lot_id} deleted')
+async def check_auth(api: Tele2Api):
+    code = await api.check_auth_code()
+    if code == 401:
+        print(Fore.RED +
+              'Token invalid or expired. Get new with ' + Fore.BLUE + 'auth.py')
+        exit()
+    elif code != 200:
+        print(Fore.RED +
+              'Tele2 server unavaliable. Try running script again later.')
+        exit()
 
 
-async def sell_minutes(sess, amount, price):
-    print(f'listing {amount} for {price} rub...')
-    resp = await sess.put(market_api, json={
-        "trafficType": "voice",
-        "cost": {"amount": price, "currency": "rub"},
-        "volume": {"value": amount, "uom": "min"}
-    })
-    print('listed')
-    lot_id = (await resp.json())['data']['id']
-    print(f'patching {lot_id}...')
-    resp = await sess.patch(f'{market_api}/{lot_id}', json={
-        "cost": {"amount": price, "currency": "rub"},
-        'showSellerName': True,
-        "emojis": ["bomb", "devil", "scream"]
-    })
-    print(f'{lot_id} PATCHED!')
-    return await resp.json()
+def print_token_time(date):
+    fmt = '%Y-%m-%d %H:%M:%S'
+    d = datetime.strptime(date, fmt) + timedelta(hours=4)
+    now = datetime.strptime(datetime.now().strftime(fmt), fmt)
+    minutes_left = int((d - now).seconds / 60)
+    print(Fore.GREEN + 'Successful auth! '
+          + f'Your token expires in {minutes_left} min.')
+
+
+async def delete_active_lots(api: Tele2Api):
+    tasks = []
+    print('Checking active lots...')
+    active_lots = await api.get_active_lots()
+    count = len(active_lots)
+    if count:
+        print(Fore.MAGENTA +
+              f'You have {count} active lot{"s" if count > 1 else ""}:')
+        for lot in active_lots:
+            color = Fore.BLUE if lot['trafficType'] == 'voice' else Fore.GREEN
+            print(
+                color + f'\t{lot["volume"]["value"]} {lot["volume"]["uom"]} for {int(lot["cost"]["amount"])} rub')
+        for lot in active_lots:
+            task = asyncio.ensure_future(api.return_lot(lot['id']))
+            tasks.append(task)
+        await asyncio.gather(*tasks)
+        print('All active lots have been deleted!')
+    else:
+        print(Fore.MAGENTA + 'You don\'t have any active lots.')
+    return active_lots
+
+
+async def print_rests(api: Tele2Api):
+    print('Checking your rests...')
+    print(Fore.CYAN + 'note: only plan (not market-bought ones nor transfered) '
+                      'rests can be sold')
+    rests = await api.get_rests()
+    print('You have')
+    print(Fore.BLUE + f'\t{rests["voice"]} min')
+    print(Fore.GREEN + f'\t{rests["data"]} gb')
+    print('\t\tavaliable to sell.')
+    return rests
+
+
+def input_lots(data_left, display_name, min_amount, max_multiplier,
+               price_multiplier, lot_type):
+    lots_to_sell = []
+    index = 1
+
+    while data_left >= min_amount:
+        user_input = input(f'\t{display_name}s lot {index} >>> ')
+
+        if user_input == '':
+            break
+
+        if not re.match(r'^\s*\d+\s*(\s\d+\s*)?$', user_input):
+            print(Fore.MAGENTA + '\tIncorrect input format. Try again')
+            continue
+
+        clean = re.sub(r'\s+', ' ', user_input.strip())
+        lot_data = list(map(int, clean.split(' ')))
+
+        amount = lot_data[0]
+        if amount < min_amount:
+            print(Fore.RED +
+                  f'\tErr: {display_name.capitalize()} lot amount must be > {min_amount}')
+            continue
+        elif amount > data_left:
+            print(Fore.RED + f'\tErr: You only have {data_left} left')
+            continue
+
+        if len(lot_data) == 1:
+            price = math.ceil(amount * price_multiplier)
+        else:
+            price = lot_data[1]
+            if price < math.ceil(amount * price_multiplier):
+                print(Fore.RED +
+                      f'\tErr: {display_name.capitalize()} lot price must be >= ({price_multiplier} * amount)')
+                continue
+            elif price > max_multiplier * amount:
+                print(Fore.RED +
+                      f'\tErr: {display_name.capitalize()} lot price must be <= ({max_multiplier} * amount)')
+                continue
+
+        print(Fore.GREEN +
+              f'\t\tOk! Lot {index}: {amount} {display_name[:3]}. for {price} rub.')
+        data_left -= amount
+        print(f'\t\t({data_left} {display_name[:3]}. left)')
+        lots_to_sell.append({
+            'name': display_name[:3],
+            'lot_type': lot_type,
+            'amount': amount,
+            'price': price,
+        })
+
+        index += 1
+    return lots_to_sell
+
+
+async def prepare_lots(rests):
+    lots_to_sell = []
+    if rests['voice'] >= 50:
+        print(Fore.BLUE + '1. Prepare minute lots:')
+        lots_to_sell += input_lots(rests['voice'], 'minute', 50, 2, 0.8,
+                                   'voice')
+    if rests['data'] >= 1:
+        print(Fore.GREEN + '2. Prepare gigabyte lots:')
+        lots_to_sell += input_lots(rests['data'], 'gigabyte', 1, 50, 15,
+                                   'data')
+    return lots_to_sell
+
+
+def print_prepared_lots(prepared_lots):
+    count = len(prepared_lots)
+    if count:
+        print(Fore.LIGHTMAGENTA_EX +
+              f'Ok. You have prepared {count} lot{"s" if count > 1 else ""}:')
+        for lot in prepared_lots:
+            color = Fore.BLUE if lot['lot_type'] == 'voice' else Fore.GREEN
+            print(
+                color + f'\t{lot["amount"]} {lot["name"]} for {lot["price"]} rub')
+
+
+def prepare_old_lots(old_lots: list):
+    lots = []
+    for lot in old_lots:
+        lots.append({
+            'lot_type': lot['trafficType'],
+            'amount': lot['volume']['value'],
+            'price': lot['cost']['amount'],
+        })
+    return lots
+
+
+async def apply_emojis(api: Tele2Api, lots: list):
+    try:
+        tasks = []
+        print(json.dumps(lots, indent=2))
+        for lot in lots:
+            task = asyncio.ensure_future(
+                api.apply_emojis(lot['data']['id'],
+                                 int(lot['data']['cost']['amount'])))
+            tasks.append(task)
+        await asyncio.gather(*tasks)
+    except:
+        pass
+
+
+async def sell_prepared_lots(api: Tele2Api, lots: list):
+    tasks = []
+    for lot in lots:
+        task = asyncio.ensure_future(api.sell_lot(lot))
+        tasks.append(task)
+    print('Listing...')
+    lots = await asyncio.gather(*tasks)
+    print(Fore.BLUE + 'Lots listed to sell.')
+    await apply_emojis(api, lots)
 
 
 async def main():
-    tasks = []
-    headers = {'Authorization': f'Bearer {TOKEN}'}
+    with open('config.json', 'r') as f:
+        obj = json.load(f)
+        phone_number = obj['number']
+        access_token = obj['token']
+        date = obj['date']
 
-    async with ClientSession(headers=headers) as ses:
-        async with ses.get(market_api) as resp:
-            lots = list((await resp.json())['data'])
-        active_lots = [a['id'] for a in lots if a['status'] == 'active']
+    async with Tele2Api(phone_number, access_token) as api:
+        colorama_init(autoreset=True)
+        await check_auth(api)
+        print_token_time(date)
+        deleted_lots = await delete_active_lots(api)
+        print(Fore.YELLOW + '-----')
 
-        for lot_id in active_lots:
-            task = asyncio.ensure_future(return_lot(ses, lot_id))
-            tasks.append(task)
-        await asyncio.gather(*tasks)
+        choices = [('Prepare new lots to sell', 'new'), 'Exit']
+        if len(deleted_lots):
+            choices.insert(0, ('Try selling returned lots again', 'again'))
+        option = console.list_input('Action', choices=choices)
 
-        tasks = []
+        if option == 'new':
+            rests = await print_rests(api)
+            prepared_lots = await prepare_lots(rests)
+            print(Fore.YELLOW + '-----')
+            if len(prepared_lots):
+                print_prepared_lots(prepared_lots)
+                if console.confirm('Sell prepared lots?', default=True):
+                    await sell_prepared_lots(api, prepared_lots)
+            else:
+                print(Fore.BLUE + 'You did not prepared any lots.')
+        elif option == 'again':
+            lots = prepare_old_lots(deleted_lots)
+            await sell_prepared_lots(api, lots)
+        elif option == 'Exit':
+            exit()
 
-        async with ses.get(rests_api) as resp:
-            rests = list((await resp.json())['data']['rests'])
-        minutes_total = sum([a['remain'] for a in rests if a['type'] == 'tariff'
-                             and a['uom'] == 'min'])
 
-        for i in range(int(minutes_total // 50)):
-            task = asyncio.ensure_future(sell_minutes(ses, 50, 40))
-            tasks.append(task)
-        resp = await asyncio.gather(*tasks)
-        print(dumps(resp, indent=2))
-
-
-future = asyncio.ensure_future(main())
-asyncio.get_event_loop().run_until_complete(future)
-print('Script terminated.')
+if __name__ == '__main__':
+    event_loop = asyncio.get_event_loop()
+    future = asyncio.ensure_future(main())
+    event_loop.run_until_complete(future)
+    print(Fore.WHITE + 'Complete.')
