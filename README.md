@@ -32,7 +32,7 @@ Simple console app that allows you to quickly sell your Tele2 data.
     For example: `60 80` - 60 minutes (or gb) will be listed for 80 rub.  
 **You can shortcut it by just `<lot amount>`.**   
     For example: `68` -  68 minutes (or gb) will be listed with **minimum**
-possible price *(in this case 55 rub if minutes, 1020 rub if gb)*.  
+possible price *(in this case - 55 rub if minutes, 1020 rub if gb)*.  
 When done leave blank (just hit enter) and you will jump to next part.
 
 ## TODO
