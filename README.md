@@ -36,5 +36,5 @@ for example `68` -  68 minutes (or gb) will be listed with **minimum**
 possible price *(in this case 55 rub if minutes, 1020 rub if gb)*.
 
 ## TODO
-* Use refresh token to support longer auth persistence (currently 4 hr.)
+* Use refresh token to support longer auth persistence (currently 240 min.)
 
