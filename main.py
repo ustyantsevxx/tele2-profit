@@ -40,8 +40,9 @@ async def delete_active_lots(api: Tele2Api):
               f'You have {count} active lot{"s" if count > 1 else ""}:')
         for lot in active_lots:
             color = Fore.BLUE if lot['trafficType'] == 'voice' else Fore.GREEN
-            print(
-                color + f'\t{lot["volume"]["value"]} {lot["volume"]["uom"]} for {int(lot["cost"]["amount"])} rub')
+            print(color +
+                  f'\t{lot["volume"]["value"]} {lot["volume"]["uom"]} '
+                  f'for {int(lot["cost"]["amount"])} rub')
         for lot in active_lots:
             task = asyncio.ensure_future(api.return_lot(lot['id']))
             tasks.append(task)
@@ -85,7 +86,8 @@ def input_lots(data_left, display_name, min_amount, max_multiplier,
         amount = lot_data[0]
         if amount < min_amount:
             print(Fore.RED +
-                  f'\tErr: {display_name.capitalize()} lot amount must be > {min_amount}')
+                  f'\tErr: {display_name.capitalize()} lot amount must be '
+                  f'> {min_amount}')
             continue
         elif amount > data_left:
             print(Fore.RED + f'\tErr: You only have {data_left} left')
@@ -97,15 +99,18 @@ def input_lots(data_left, display_name, min_amount, max_multiplier,
             price = lot_data[1]
             if price < math.ceil(amount * price_multiplier):
                 print(Fore.RED +
-                      f'\tErr: {display_name.capitalize()} lot price must be >= ({price_multiplier} * amount)')
+                      f'\tErr: {display_name.capitalize()} lot price must be >='
+                      f' ({price_multiplier} * amount)')
                 continue
             elif price > max_multiplier * amount:
                 print(Fore.RED +
-                      f'\tErr: {display_name.capitalize()} lot price must be <= ({max_multiplier} * amount)')
+                      f'\tErr: {display_name.capitalize()} lot price must be <='
+                      f' ({max_multiplier} * amount)')
                 continue
 
         print(Fore.GREEN +
-              f'\t\tOk! Lot {index}: {amount} {display_name[:3]}. for {price} rub.')
+              f'\t\tOk! Lot {index}: {amount} {display_name[:3]}.'
+              f' for {price} rub.')
         data_left -= amount
         print(f'\t\t({data_left} {display_name[:3]}. left)')
         lots_to_sell.append({
@@ -139,8 +144,8 @@ def print_prepared_lots(prepared_lots):
               f'Ok. You have prepared {count} lot{"s" if count > 1 else ""}:')
         for lot in prepared_lots:
             color = Fore.BLUE if lot['lot_type'] == 'voice' else Fore.GREEN
-            print(
-                color + f'\t{lot["amount"]} {lot["name"]} for {lot["price"]} rub')
+            print(color + f'\t{lot["amount"]} {lot["name"]} '
+                          f'for {lot["price"]} rub')
 
 
 def prepare_old_lots(old_lots: list):
@@ -154,16 +159,6 @@ def prepare_old_lots(old_lots: list):
     return lots
 
 
-async def apply_emojis(api: Tele2Api, lots: list):
-    tasks = []
-    for lot in lots:
-        task = asyncio.ensure_future(
-            api.apply_emojis(lot['data']['id'],
-                             int(lot['data']['cost']['amount'])))
-        tasks.append(task)
-    await asyncio.gather(*tasks)
-
-
 async def sell_prepared_lots(api: Tele2Api, lots: list):
     tasks = []
     for lot in lots:
@@ -172,11 +167,10 @@ async def sell_prepared_lots(api: Tele2Api, lots: list):
     print('Listing...')
     lots = await asyncio.gather(*tasks)
     if any(lot['meta']['status'] == "bp_err_limDay" for lot in lots):
-        print(
-            Fore.MAGENTA + 'Day listing limit (100) reached. Try again tomorrow.')
+        print(Fore.MAGENTA +
+              'Day listing limit (100) reached. Try again tomorrow.')
     else:
         print(Fore.BLUE + 'Lots have been listed to sell.')
-        await apply_emojis(api, lots)
 
 
 async def main():
@@ -188,9 +182,11 @@ async def main():
 
     async with Tele2Api(phone_number, access_token) as api:
         colorama_init(autoreset=True)
+
         await check_auth(api)
         print_token_time(date)
         deleted_lots = await delete_active_lots(api)
+
         print(Fore.YELLOW + '-----')
 
         choices = [('Prepare new lots to sell', 'new'), 'Exit']
