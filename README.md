@@ -1,16 +1,40 @@
 # Tele2 Profit
-Script allows you to quickly sell your Tele2 data. Firstly, it returns all your listings from Tele2 Market. Then it list all data with minimal price + applies emojis and shit for faster selling.
+Simple console app that allows you to quickly sell your Tele2 data.
+
+## Features
+* Quick market listing of your Tele2 data
+* Bumping up lots that haven't been sold
+
+## Demo
+![Imgur demo gif](https://i.imgur.com/xKTTRDS.gif)
 
 ## Installation
-Activate **venv** if needed and `pip install -r requirements.txt` 
+1. Clone repository
+2. Setup virtual environment (optional)  
+    2.1. Create **venv** with `python -m venv venv`  
+    2.2. Activate by running `venv\Scripts\activate`
 
 ## Usage
-1. Create `config.json` file with number:
-```json
-{
-  "number": 79123456789
-}
-```
-2. Run `gettoken.py` and enter SMS-code sent by Tele2.
-3. Run `main.py` and get shit done.
-**fyi: token saves only on your pc and wont be sent to me) you can check script to be sure** 
+1. Login with `auth.py`.
+**note: access-token saves on your PC _only_ in `./config.json` file** 
+2. Run `main.py` and select action.
+
+### Current Tele2 market lot rules:  
+##### Gigabytes:
+* `Minimum GB amount - 1 GB`
+* `Minimum GB price - 15 rub/GB, maximum - 50 rub/GB`
+##### Minutes:
+* `Minimum minute amount - 50 min`
+* `Minimum minute price - 0.8 rub/min, maximum - 2 rub/min`
+
+### Listing lots
+Preparing lots is done with this syntax:
+`<lot amount> <lot price>`, for example: `60 80` - 60 minutes (or gb) 
+will be listed for 80 rub.  
+You can shortcut it by just `<lot amount>`, 
+for example `68` -  68 minutes (or gb) will be listed with **minimum**
+possible price *(in this case 55 rub if minutes, 1020 rub if gb)*.
+
+## TODO
+* Use refresh token to support longer auth persistence (currently 4 hr.)
+

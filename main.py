@@ -9,6 +9,15 @@ from colorama import init as colorama_init, Fore
 from api import Tele2Api
 
 
+def load_config():
+    with open('config.json', 'r') as f:
+        obj = json.load(f)
+        phone_number = obj['number']
+        access_token = obj['token']
+        date = obj['date']
+    return access_token, date, phone_number
+
+
 async def check_auth(api: Tele2Api):
     code = await api.check_auth_code()
     if code == 401:
@@ -173,40 +182,43 @@ async def sell_prepared_lots(api: Tele2Api, lots: list):
         print(Fore.BLUE + 'Lots have been listed to sell.')
 
 
-async def main():
-    with open('config.json', 'r') as f:
-        obj = json.load(f)
-        phone_number = obj['number']
-        access_token = obj['token']
-        date = obj['date']
+async def display_menu(have_lots_returned: bool):
+    choices = [('Prepare new lots to sell', 'new'), 'Exit']
+    if have_lots_returned:
+        choices.insert(0, ('Try selling returned lots again', 'again'))
+    return console.list_input('Action', choices=choices)
 
+
+async def menu_new_action(api):
+    rests = await print_rests(api)
+    prepared_lots = await prepare_lots(rests)
+    print(Fore.YELLOW + '-----')
+    if len(prepared_lots):
+        print_prepared_lots(prepared_lots)
+        if console.confirm('Sell prepared lots?', default=True):
+            await sell_prepared_lots(api, prepared_lots)
+    else:
+        print(Fore.BLUE + 'You did not prepared any lots.')
+
+
+async def menu_again_action(api, deleted_lots):
+    lots = prepare_old_lots(deleted_lots)
+    await sell_prepared_lots(api, lots)
+
+
+async def main():
+    access_token, date, phone_number = load_config()
     async with Tele2Api(phone_number, access_token) as api:
         colorama_init(autoreset=True)
-
         await check_auth(api)
         print_token_time(date)
         deleted_lots = await delete_active_lots(api)
-
         print(Fore.YELLOW + '-----')
-
-        choices = [('Prepare new lots to sell', 'new'), 'Exit']
-        if len(deleted_lots):
-            choices.insert(0, ('Try selling returned lots again', 'again'))
-        option = console.list_input('Action', choices=choices)
-
+        option = await display_menu(len(deleted_lots) > 0)
         if option == 'new':
-            rests = await print_rests(api)
-            prepared_lots = await prepare_lots(rests)
-            print(Fore.YELLOW + '-----')
-            if len(prepared_lots):
-                print_prepared_lots(prepared_lots)
-                if console.confirm('Sell prepared lots?', default=True):
-                    await sell_prepared_lots(api, prepared_lots)
-            else:
-                print(Fore.BLUE + 'You did not prepared any lots.')
+            await menu_new_action(api)
         elif option == 'again':
-            lots = prepare_old_lots(deleted_lots)
-            await sell_prepared_lots(api, lots)
+            await menu_again_action(api, deleted_lots)
         elif option == 'Exit':
             exit()
 
