@@ -28,11 +28,10 @@ Simple console app that allows you to quickly sell your Tele2 data.
 * `Minimum minute price - 0.8 rub/min, maximum - 2 rub/min`
 
 ### Listing lots
-Preparing lots is done with this syntax:
-`<lot amount> <lot price>`, for example: `60 80` - 60 minutes (or gb) 
-will be listed for 80 rub.  
-You can shortcut it by just `<lot amount>`, 
-for example `68` -  68 minutes (or gb) will be listed with **minimum**
+**Preparing lots is done with this syntax: `<lot amount> <lot price>`.**  
+    For example: `60 80` - 60 minutes (or gb) will be listed for 80 rub.  
+**You can shortcut it by just `<lot amount>`.**   
+    For example `68` -  68 minutes (or gb) will be listed with **minimum**
 possible price *(in this case 55 rub if minutes, 1020 rub if gb)*.  
 When done leave blank (just hit enter) and you will jump to next part.
 
