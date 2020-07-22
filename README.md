@@ -19,11 +19,11 @@ Simple console app that allows you to quickly sell your Tele2 data.
 **note: access-token saves on your PC _only_ in `./config.json` file** 
 2. Run `main.py` and select action.
 
-### Current Tele2 market lot rules:  
-##### Gigabytes:
+### Current Tele2 market lot rules
+##### Gigabytes
 * `Minimum GB amount - 1 GB`
 * `Minimum GB price - 15 rub/GB, maximum - 50 rub/GB`
-##### Minutes:
+##### Minutes
 * `Minimum minute amount - 50 min`
 * `Minimum minute price - 0.8 rub/min, maximum - 2 rub/min`
 
