@@ -13,7 +13,9 @@ Simple console app that allows you to quickly sell your Tele2 data on their Mark
 1. Clone repository
 2. Setup virtual environment (optional)  
     2.1. Create **venv** with `python -m venv venv`  
-    2.2. Activate by running `venv\Scripts\activate`
+    2.2. Activate by running this comand (just paste it after previous and hit enter) `venv\Scripts\activate`
+3. Install dependencies with `pip install -r requirements.txt`
+4. You are good to go!
 
 ## Usage
 1. Login with `auth.py`. Access token works 4 hours, then it needs to be updated.  
