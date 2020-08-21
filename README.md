@@ -1,15 +1,19 @@
 # Tele2 Profit
-Simple console app that allows you to quickly sell your Tele2 data on their Market
+Console application that allows you to quickly sell your Tele2 data on their **Market**
+
 
 ## Features
 * Quick market listing of your Tele2 data
 * Bumping up lots that haven't been sold
-* Asyncronous queries to Tele2 api resulting in almost instant result
+* Asyncronous queries to _Tele2 API_ allow to perform multiple actions simultaneously
+
 
 ## Demo
-![Imgur demo gif](https://i.imgur.com/xKTTRDS.gif)
+![imgur demo gif](https://i.imgur.com/xKTTRDS.gif)
+
 
 ## Installation
+#### Steps:
 1. Clone repository
 2. Setup virtual environment (optional)  
     2.1. Create **venv** with `python -m venv venv`  
@@ -17,27 +21,37 @@ Simple console app that allows you to quickly sell your Tele2 data on their Mark
 3. Install dependencies with `pip install -r requirements.txt`
 4. You are good to go!
 
-## Usage
-1. Login with `auth.py`. Access token works 4 hours, then it needs to be updated.  
-**note: access-token saves on your PC _only_, in `./config.json` file** 
-2. Run `main.py` and select action.
+#### Command list (Windows):
+* `git clone https://github.com/raritetmolodoy/tele2-profit.git`
+* `cd tele2-profit`
+* `python -m venv venv`
+* `venv\Scripts\activate`
+* `pip install -r requirements.txt`
 
-### Current Tele2 market lot rules
+
+## Usage
+1. Login with running `python auth.py`. Access token works 4 hours, then it needs to be updated.  
+**note: access-token saves on your PC _only_, in `./config.json` file** 
+2. Run `python main.py` and select action.
+
+### FYI: Current Tele2 market lot rules
+
 #### Gigabytes
 * Minimum GB amount - **1 GB**
 * Minimum GB price - **15 rub/GB**, maximum - **50 rub/GB**
+
 #### Minutes
 * Minimum minute amount - **50 min**
 * Minimum minute price - **0.8 rub/min**, maximum - **2 rub/min**
 
 ### Listing lots
 **Preparing lots is done with this syntax: `<lot amount> <lot price>`**  
-    For example: `60 80` - 60 minutes (or gb) will be listed for 80 rub.  
-**You can shortcut it by just `<lot amount>`**   
-    For example: `68` -  68 minutes (or gb) will be listed with **minimum**
-possible price *(in this case - 55 rub if minutes, 1020 rub if gb)*.  
-When done leave blank (just hit enter) and you will jump to next part.
+For example: `60 80` - 60 minutes (or gb) will be listed for 80 rub.  
+
+**Standard syntax can be shortened to just `<lot amount>`**   
+For example: `68` -  68 minutes (or gb) will be listed with **minimum** possible price *(in this case - 55 rub if minutes, 1020 rub if gb)*.  
+When done leave input field empty (just hit enter) and you will jump to the next part.
+
 
 ## TODO
 * Use refresh token to support longer auth persistence (currently 4 hours)
-
