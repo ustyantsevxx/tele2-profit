@@ -14,8 +14,9 @@ def load_config():
         obj = json.load(f)
         phone_number = obj['number']
         access_token = obj['token']
+        region_url = obj['region_url']
         date = obj['date']
-    return access_token, date, phone_number
+    return access_token, date, phone_number, region_url
 
 
 async def check_auth(api: Tele2Api):
@@ -207,8 +208,8 @@ async def menu_again_action(api, deleted_lots):
 
 
 async def main():
-    access_token, date, phone_number = load_config()
-    async with Tele2Api(phone_number, access_token) as api:
+    access_token, date, phone_number, region_url = load_config()
+    async with Tele2Api(phone_number, region_url, access_token) as api:
         colorama_init(autoreset=True)
         await check_auth(api)
         print_token_time(date)
