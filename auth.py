@@ -40,23 +40,25 @@ def get_phone_number():
     return phone_number
 
 
-async def get_access_token(api: Tele2Api, phone_number: str):
-    await api.send_sms_code()
+async def get_access_token(api: Tele2Api, phone_number: str, region_url: str):
+    await api.send_sms_code(phone_number, region_url)
     while True:
         try:
             sms_code = input(Fore.LIGHTCYAN_EX + 'SMS code: ')
-            access_token = await api.get_access_token(phone_number, sms_code)
+            access_token = await api.get_access_token(phone_number, sms_code,
+                                                      region_url)
             return access_token
         except KeyError:
             print(Fore.RED + 'Invalid SMS-сode. Try again')
 
 
-def save_config(phone_number: str, access_token: str):
+def save_config(phone_number: str, access_token: str, region_url: str):
     print(Fore.GREEN + 'Successful auth!')
     with open('config.json', 'w') as f:
         json.dump({
             'number': phone_number,
             'token': access_token,
+            'region_url': region_url,
             'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }, f, indent=2)
     print(Fore.YELLOW + 'Token saved to ' + Fore.BLUE + 'config.json')
@@ -66,8 +68,9 @@ async def main():
     colorama_init(autoreset=True)
     phone_number = get_phone_number()
     async with Tele2Api(phone_number) as api:
-        access_token = await get_access_token(api, phone_number)
-    save_config(phone_number, access_token)
+        region_url = await api.determine_region()
+        access_token = await get_access_token(api, phone_number, region_url)
+    save_config(phone_number, access_token, region_url)
 
 
 if __name__ == '__main__':
