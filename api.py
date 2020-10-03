@@ -5,35 +5,50 @@ class Tele2Api:
     session: ClientSession
     access_token: str
 
-    def __init__(self, phone_number: str, access_token: str = ''):
-        base_api = f'https://msk.tele2.ru/api/subscribers/{phone_number}'
+    def __init__(self, phone_number: str, region_url: str = '',
+                 access_token: str = ''):
+        base_api = f'https://{region_url}/api/subscribers/{phone_number}'
+        self.region_query_api = 'https://tele2.ru/'
         self.market_api = f'{base_api}/exchange/lots/created'
         self.rests_api = f'{base_api}/rests'
         self.profile_api = f'{base_api}/profile'
-        self.sms_post_url = f'https://msk.tele2.ru/api/validation/number/{phone_number}'
-        self.auth_post_url = 'https://my.tele2.ru/auth/realms/tele2-b2c/protocol/openid-connect/token'
+        self.sms_post_url = 'https://{}/api/validation/number/{}'
+        self.auth_post_url = 'https://{}/auth/realms/tele2-b2c/protocol/openid-connect/token'
         self.access_token = access_token
 
     async def __aenter__(self):
-        self.session = ClientSession(headers={
-            'Authorization': f'Bearer {self.access_token}'
-        })
+        headers = {}
+        if self.access_token:
+            headers['Authorization'] = f'Bearer {self.access_token}'
+        self.session = ClientSession(headers=headers)
         return self
 
     async def __aexit__(self, *args):
         await self.session.close()
 
-    async def send_sms_code(self):
-        await self.session.post(self.sms_post_url, json={'sender': 'Tele2'})
+    async def send_sms_code(self, phone_number: str, region_url: str):
+        await self.session.post(
+            self.sms_post_url.format(region_url, phone_number),
+            json={'sender': 'Tele2'})
 
-    async def get_access_token(self, phone_number: str, sms_code: str):
-        response = await self.session.post(self.auth_post_url, data={
-            'client_id': 'digital-suite-web-app',
-            'grant_type': 'password',
-            'username': phone_number,
-            'password': sms_code,
-            'password_type': 'sms_code'
-        })
+    async def determine_region(self):
+        resp = await self.session.get(self.region_query_api,
+                                      allow_redirects=False)
+        full_region_url = resp.headers['Location']
+        region_url = full_region_url.split('/')[2]
+        self.region_url = region_url
+        return region_url
+
+    async def get_access_token(self, phone_number: str, sms_code: str,
+                               region_url: str):
+        response = await self.session.post(
+            self.auth_post_url.format(region_url), data={
+                'client_id': 'digital-suite-web-app',
+                'grant_type': 'password',
+                'username': phone_number,
+                'password': sms_code,
+                'password_type': 'sms_code'
+            })
         return (await response.json())['access_token']
 
     async def check_auth_code(self):
