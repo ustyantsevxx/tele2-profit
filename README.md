@@ -2,24 +2,46 @@
 Console application that allows you to quickly sell your Tele2 data on their **Market**
 
 
+## Disclaimer
+_От автора:_  
+Я не несу ответственности за ваши номера (если они улетят в бан или еще чего по-хуже).  
+Скрипт не делает ничего запрещенного, а лишь "нажимает кнопочки, которые вы могли
+бы нажать в их приложении, потратив в 10 (да-да) раз больше времени".  
+Скрипт не ворует данные и не каким образом не взаимодействует ни с чем-либо кроме
+оффициального (но не публичного) API Tele2.
+Если возникли какие-либо проблемы в работе - откройте обсуждение на вкладке Issues и,
+если, нашли решение, предложите автору, буду очень признателен. Так как скрипт очень
+чувствителен к региону, из которого он запускается, проблемы возникнуть могут, и не факт,
+что конкретно ваша проблема вообще решаема (например, старый тариф без поддержки
+Маркета и т.п). Спасибо за понимание)
+
+
 ## Features
 * Quick market listing of your Tele2 data
 * Bumping up lots that haven't been sold
-* Asyncronous queries to _Tele2 API_ allow to perform multiple actions simultaneously
+* Asynchronous queries to _Tele2 API_ allow to perform multiple actions simultaneously
 
 
-## Demo
+## Demo (v1.0.0 on Windows 10)
 ![imgur demo gif](https://i.imgur.com/xKTTRDS.gif)
 
 
-## Installation
+## Installation (basic - *Windows only*)
+#### Steps:
+1. Go to [releases](https://github.com/raritetmolodoy/tele2-profit/releases) page
+and download the latest **zip**-archive (tele2-profit@v*\_\*\_\*.zip)
+2. Unarchive wherever you want and run **exe**-files.
+3. You are good to go!
+
+
+## Source installation (advanced - _Any OS_)
 #### Steps:
 1. Clone repository
 2. Setup virtual environment (optional)  
     2.1. Create **venv** with `python -m venv venv`  
-    2.2. Activate by running this comand (just paste it after previous and hit enter) `venv\Scripts\activate`
+    2.2. Activate by running this command (just paste it after previous and hit enter) `venv\Scripts\activate`
 3. Install dependencies with `pip install -r requirements.txt`
-4. You are good to go!
+4. You are also good to go!
 
 #### Command list (Windows):
 * `git clone https://github.com/raritetmolodoy/tele2-profit.git`
@@ -28,13 +50,20 @@ Console application that allows you to quickly sell your Tele2 data on their **M
 * `venv\Scripts\activate`
 * `pip install -r requirements.txt`
 
+#### Command list (Unix):
+* `git clone https://github.com/raritetmolodoy/tele2-profit.git`
+* `cd tele2-profit`
+* `python3 -m venv venv`
+* `sudo source venv\Scripts\activate`
+* `pip3 install -r requirements.txt`
+
 
 ## Usage
-1. Login with running `python auth.py`. Access token works 4 hours, then it needs to be updated.  
+1. Login with running `python auth.py` (or auth.exe if built version). Access token works 4 hours, then it needs to be updated.  
 **note: access-token saves on your PC _only_, in `./config.json` file** 
-2. Run `python main.py` and select action.
+2. Run `python main.py` (or main.exe if built version) and select action.
 
-### FYI: Current Tele2 market lot rules
+### FYI: Current Tele2 market lot requirements
 
 #### Gigabytes
 * Minimum GB amount - **1 GB**
@@ -55,3 +84,8 @@ When done leave input field empty (just hit enter) and you will jump to the next
 
 ## TODO
 * Use refresh token to support longer auth persistence (currently 4 hours)
+
+## Donations
+Special thanks to my donors:
+* Кирилл - 100 rub
+* Alex - 300 rub

@@ -9,6 +9,10 @@ from colorama import init as colorama_init, Fore
 from api import Tele2Api
 
 
+def print_version():
+    print('tele2-profit v1.2.0')
+
+
 def load_config():
     with open('config.json', 'r') as f:
         obj = json.load(f)
@@ -26,7 +30,7 @@ async def check_auth(api: Tele2Api):
         exit()
     elif code != 200:
         print(Fore.RED +
-              'Tele2 server unavaliable. Try running script again later.')
+              'Tele2 server unavailable. Try running script again later.')
         exit()
 
 
@@ -64,13 +68,13 @@ async def delete_active_lots(api: Tele2Api):
 
 async def print_rests(api: Tele2Api):
     print('Checking your rests...')
-    print(Fore.CYAN + 'note: only plan (not market-bought ones nor transfered) '
-                      'rests can be sold')
+    print(Fore.CYAN + 'note: only plan (not market-bought ones nor transferred)'
+                      ' rests can be sold')
     rests = await api.get_rests()
     print('You have')
     print(Fore.BLUE + f'\t{rests["voice"]} min')
     print(Fore.GREEN + f'\t{rests["data"]} gb')
-    print('\t\tavaliable to sell.')
+    print('\t\tavailable to sell.')
     return rests
 
 
@@ -168,6 +172,17 @@ def prepare_old_lots(old_lots: list):
     return lots
 
 
+def print_lot_listing_status(lots: list):
+    for lot in lots:
+        if lot['meta']['status'] == 'OK':
+            amount = lot['data']['volume']['value']
+            uom = lot['data']['volume']['uom']
+            cost = lot['data']['cost']['amount']
+            print(Fore.GREEN + f'Successful listing {amount} {uom} for {cost} rub.')
+        else:
+            print(Fore.RED + 'Error during listing. Try again')
+
+
 async def sell_prepared_lots(api: Tele2Api, lots: list):
     tasks = []
     for lot in lots:
@@ -175,7 +190,8 @@ async def sell_prepared_lots(api: Tele2Api, lots: list):
         tasks.append(task)
     print('Listing...')
     lots = await asyncio.gather(*tasks)
-    if any(lot['meta']['status'] == "bp_err_limDay" for lot in lots):
+    print_lot_listing_status(lots)
+    if any(lot['meta']['status'] == 'bp_err_limDay' for lot in lots):
         print(Fore.MAGENTA +
               'Day listing limit (100) reached. Try again tomorrow.')
     else:
@@ -206,12 +222,28 @@ async def menu_again_action(api, deleted_lots):
     await sell_prepared_lots(api, lots)
 
 
+async def print_balance(api):
+    balance = await api.get_balance()
+    print(Fore.BLUE + f'Balance: {balance} rub.')
+
+
+def init_script():
+    colorama_init(False)
+    print_version()
+
+
 async def main():
     access_token, date, phone_number = load_config()
     async with Tele2Api(phone_number, access_token) as api:
-        colorama_init(autoreset=True)
+        # script initialization  
+        
+        init_script() 
+        
+        # logic pipeline:
+        
         await check_auth(api)
         print_token_time(date)
+        await print_balance(api)
         deleted_lots = await delete_active_lots(api)
         print(Fore.YELLOW + '-----')
         option = await display_menu(len(deleted_lots) > 0)
