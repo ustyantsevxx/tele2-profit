@@ -2,6 +2,7 @@ import asyncio
 import json
 import math
 import re
+import os
 from datetime import datetime, timedelta
 
 import inquirer as console
@@ -253,6 +254,7 @@ async def main():
             await menu_again_action(api, deleted_lots)
         elif option == 'Exit':
             exit()
+        os.system('pause')
 
 
 if __name__ == '__main__':
