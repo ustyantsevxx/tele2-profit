@@ -1,6 +1,7 @@
 import asyncio
 import json
 import re
+import os
 from datetime import datetime
 
 import inquirer as console
@@ -68,6 +69,7 @@ async def main():
     async with Tele2Api(phone_number) as api:
         access_token = await get_access_token(api, phone_number)
     save_config(phone_number, access_token)
+    os.system('pause')
 
 
 if __name__ == '__main__':
