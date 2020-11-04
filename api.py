@@ -6,11 +6,12 @@ class Tele2Api:
     access_token: str
 
     def __init__(self, phone_number: str, access_token: str = ''):
-        base_api = f'https://msk.tele2.ru/api/subscribers/{phone_number}'
+        base_api = f'https://my.tele2.ru/api/subscribers/{phone_number}'
         self.market_api = f'{base_api}/exchange/lots/created'
         self.rests_api = f'{base_api}/rests'
         self.profile_api = f'{base_api}/profile'
-        self.sms_post_url = f'https://msk.tele2.ru/api/validation/number/{phone_number}'
+        self.balance_api = f'{base_api}/balance'
+        self.sms_post_url = f'https://my.tele2.ru/api/validation/number/{phone_number}'
         self.auth_post_url = 'https://my.tele2.ru/auth/realms/tele2-b2c/protocol/openid-connect/token'
         self.access_token = access_token
 
@@ -39,6 +40,10 @@ class Tele2Api:
     async def check_auth_code(self):
         response = await self.session.get(self.profile_api)
         return response.status
+
+    async def get_balance(self):
+        response = await self.session.get(self.balance_api)
+        return (await response.json())['data']['value']
 
     async def sell_lot(self, lot):
         response = await self.session.put(self.market_api, json={
