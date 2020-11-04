@@ -172,6 +172,17 @@ def prepare_old_lots(old_lots: list):
     return lots
 
 
+def print_lot_listing_status(lots: list):
+    for lot in lots:
+        if lot['meta']['status'] == 'OK':
+            amount = lot['data']['volume']['value']
+            uom = lot['data']['volume']['uom']
+            cost = lot['data']['cost']['amount']
+            print(Fore.GREEN + f'Successful listing {amount} {uom} for {cost} rub.')
+        else:
+            print(Fore.RED + 'Error during listing. Try again')
+
+
 async def sell_prepared_lots(api: Tele2Api, lots: list):
     tasks = []
     for lot in lots:
@@ -179,7 +190,8 @@ async def sell_prepared_lots(api: Tele2Api, lots: list):
         tasks.append(task)
     print('Listing...')
     lots = await asyncio.gather(*tasks)
-    if any(lot['meta']['status'] == "bp_err_limDay" for lot in lots):
+    print_lot_listing_status(lots)
+    if any(lot['meta']['status'] == 'bp_err_limDay' for lot in lots):
         print(Fore.MAGENTA +
               'Day listing limit (100) reached. Try again tomorrow.')
     else:
