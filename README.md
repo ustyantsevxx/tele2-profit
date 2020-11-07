@@ -26,7 +26,7 @@ _От автора:_
 ![imgur demo gif](https://i.imgur.com/xKTTRDS.gif)
 
 
-## Installation (basic - *Windows only*)
+## Installation (basic - *Windows x64 only (x32 work in progress)*)
 #### Steps:
 1. Go to [releases](https://github.com/raritetmolodoy/tele2-profit/releases) page
 and download the latest **zip**-archive (tele2-profit@v*\_\*\_\*.zip)
@@ -86,6 +86,7 @@ When done leave input field empty (just hit enter) and you will jump to the next
 * Use refresh token to support longer auth persistence (currently 4 hours)
 
 ## Donations
-Special thanks to my donors:
+Special thanks to my donators:
 * Кирилл - 100 rub
 * Alex - 300 rub
+* Никита - 300 rub
