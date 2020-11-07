@@ -26,7 +26,7 @@ _От автора:_
 ![imgur demo gif](https://i.imgur.com/xKTTRDS.gif)
 
 
-## Installation (basic - *Windows x64 only (x32 work in progress)*)
+## Installation (basic - *Windows x64 only [x32 work in progress]*)
 #### Steps:
 1. Go to [releases](https://github.com/raritetmolodoy/tele2-profit/releases) page
 and download the latest **zip**-archive (tele2-profit@v*\_\*\_\*.zip)
