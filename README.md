@@ -89,4 +89,6 @@ When done leave input field empty (just hit enter) and you will jump to the next
 Special thanks to my donators:
 * Кирилл - 100 rub
 * Alex - 300 rub
-* Никита - 300 rub
+* Никита - 300 rub  
+
+If you want to support my work - *79044979272* (qiwi, sber, tinkoff)
