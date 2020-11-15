@@ -1,4 +1,5 @@
 from aiohttp import ClientSession
+from time import sleep
 
 
 class Tele2Api:
@@ -52,10 +53,16 @@ class Tele2Api:
             'volume': {'value': lot['amount'],
                        'uom': 'min' if lot['lot_type'] == 'voice' else 'gb'}
         })
+        # TODO: вместо ожидания 0.5 поставить что-то более полезное,
+        #  одновременно не получается выставлять больше (((
+        sleep(0.5)
         return await response.json()
 
     async def return_lot(self, lot_id):
         response = await self.session.delete(f'{self.market_api}/{lot_id}')
+        # TODO: вместо ожидания 0.5 поставить что-то более полезное,
+        #  одновременно не получается выставлять больше (((
+        sleep(0.5)
         return await response.json()
 
     async def get_active_lots(self):
