@@ -1,12 +1,11 @@
-import asyncio
 import json
 import re
-import os
 from datetime import datetime
 
 import inquirer as console
 from colorama import init as colorama_init, Fore
 from api import Tele2Api
+from utils import run_main
 
 
 def input_phone_number():
@@ -69,10 +68,7 @@ async def main():
     async with Tele2Api(phone_number) as api:
         access_token = await get_access_token(api, phone_number)
     save_config(phone_number, access_token)
-    os.system('pause')
 
 
 if __name__ == '__main__':
-    event_loop = asyncio.get_event_loop()
-    future = asyncio.ensure_future(main())
-    event_loop.run_until_complete(future)
+    run_main(main)
