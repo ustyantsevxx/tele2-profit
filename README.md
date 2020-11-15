@@ -29,7 +29,7 @@ _От автора:_
 ## Installation (basic - *Windows x64 only [x32 work in progress]*)
 #### Steps:
 1. Go to [releases](https://github.com/raritetmolodoy/tele2-profit/releases) page
-and download the latest **zip**-archive (tele2-profit@v*\_\*\_\*.zip)
+and download the latest **zip**-archive (tele2-profit@\<version\>.zip)
 2. Unarchive wherever you want and run **exe**-files.
 3. You are good to go!
 
