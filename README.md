@@ -1,4 +1,4 @@
-# Tele2 Profit
+# Tele2 Profit v1.2.1
 Console application that allows you to quickly sell your Tele2 data on their **Market**
 
 
