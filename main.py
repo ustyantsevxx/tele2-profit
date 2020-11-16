@@ -81,7 +81,7 @@ def input_lots(data_left, display_name, min_amount, max_multiplier,
     lots_to_sell = []
     index = 1
     while data_left >= min_amount:
-        user_input = input(Fore.WHITE + f'\t{display_name}s lot {index} >>> ')
+        user_input = input(Fore.WHITE + f'\t{display_name}s lot {index} (default {min_amount})>>> ') or str(min_amount)
 
         if user_input == '':
             break
