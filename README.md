@@ -54,7 +54,7 @@ and download the latest **zip**-archive (tele2-profit@\<version\>.zip)
 * `git clone https://github.com/raritetmolodoy/tele2-profit.git`
 * `cd tele2-profit`
 * `python3 -m venv venv`
-* `source venv\Scripts\activate`
+* `source venv/bin/activate`
 * `pip3 install -r requirements.txt`
 
 
