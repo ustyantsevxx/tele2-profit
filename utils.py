@@ -5,7 +5,7 @@ from colorama import Fore
 
 
 def print_version():
-    print('tele2-profit v1.2.1')
+    print('tele2-profit v1.2.2')
 
 
 def run_main(main):
