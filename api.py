@@ -18,11 +18,7 @@ class Tele2Api:
 
     async def __aenter__(self):
         self.session = ClientSession(headers={
-            'Authorization': f'Bearer {self.access_token}',
-            'Connection': 'keep-alive',
-            'Tele2-User-Agent': '"mytele2-app/3.17.0"; "unknown"; "Android/9"; "Build/12998710"',
-            'X-API-Version': '1',
-            'User-Agent': 'okhttp/4.2.0'
+            'Authorization': f'Bearer {self.access_token}'
         })
         return self
 
