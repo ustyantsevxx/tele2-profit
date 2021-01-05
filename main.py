@@ -25,7 +25,8 @@ async def check_auth(api: Tele2Api):
     code = await api.check_auth_code()
     if code == 401:
         print(Fore.RED +
-              'Token invalid or expired. Get new with ' + Fore.YELLOW + 'auth.py')
+              'Token invalid or expired. Get new with '
+              + Fore.YELLOW + 'auth.py')
         exit()
     elif code != 200:
         print(Fore.RED +
@@ -137,14 +138,25 @@ def input_lots(data_left, display_name, min_amount, max_multiplier,
 
 async def prepare_lots(rests):
     lots_to_sell = []
+
     if rests['voice'] >= 50:
         print(Fore.YELLOW + '1. Prepare minute lots:')
-        lots_to_sell += input_lots(rests['voice'], 'minute', 50, 2, 0.8,
-                                   'voice')
+        lots_to_sell += input_lots(data_left=rests['voice'],
+                                   display_name='minute',
+                                   min_amount=50,
+                                   max_multiplier=2,
+                                   price_multiplier=0.8,
+                                   lot_type='voice'
+                                   )
     if rests['data'] >= 1:
         print(Fore.GREEN + '2. Prepare gigabyte lots:')
-        lots_to_sell += input_lots(rests['data'], 'gigabyte', 1, 50, 15,
-                                   'data')
+        lots_to_sell += input_lots(data_left=rests['data'],
+                                   display_name='gigabyte',
+                                   min_amount=1,
+                                   max_multiplier=50,
+                                   price_multiplier=15,
+                                   lot_type='data'
+                                   )
     return lots_to_sell
 
 
@@ -227,6 +239,8 @@ async def print_balance(api):
 
 def input_auto_resell_interval():
     while True:
+        print(Fore.CYAN + 'Tip: As Tele2 API may lag - it is recommended ' +
+              'to set interval value to at least 3 seconds.')
         user_input = input(
             Fore.MAGENTA + 'Auto-resell interval (seconds): ')
         try:
@@ -244,14 +258,17 @@ async def activate_timer_if_needed(api: Tele2Api):
                            f'{interval} sec.')
         iteration = 1
         while True:
+            print(Fore.WHITE + f'\nSleeping for {interval} sec...')
             time.sleep(interval)
-            print(Fore.CYAN + f'\nRelisting (iteration #{iteration})...\n')
+            print(Fore.CYAN + f'Relisting (iteration #{iteration})...\n')
             deleted_lots = await delete_active_lots(api)
             if not len(deleted_lots):
                 print(Fore.GREEN +
                       'All lots have been sold! Deactivating the timer...')
+                await print_balance(api)
                 break
             await menu_again_action(api, deleted_lots)
+            iteration += 1
 
 
 async def main():
