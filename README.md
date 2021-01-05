@@ -1,5 +1,7 @@
-# Tele2 Profit v1.2.2
+# Tele2 Profit [![Release](https://img.shields.io/github/v/release/raritetmolodoy/tele2-profit?color=black&label=%20)](https://github.com/raritetmolodoy/tele2-profit/releases)
+
 Console application that allows you to quickly sell your Tele2 data on their **Market**
+
 
 
 ## Disclaimer
@@ -28,8 +30,8 @@ _От автора:_
 
 ## Installation (basic - *Windows x64 only [x32 work in progress]*)
 #### Steps:
-1. Go to [releases](https://github.com/raritetmolodoy/tele2-profit/releases) page
-and download the latest **zip**-archive (tele2-profit@\<version\>.zip)
+1. Go to [latest release](https://github.com/raritetmolodoy/tele2-profit/releases/latest)
+and download **zip**-archive (tele2-profit@\<version\>.zip)
 2. Unarchive wherever you want and run **exe**-files.
 3. You are good to go!
 
@@ -89,6 +91,7 @@ When done leave input field empty (just hit enter) and you will jump to the next
 Special thanks to my donators:
 * Кирилл - 100 rub
 * Alex - 300 rub
-* Никита - 300 rub  
+* Никита - 300 rub
+* Михаил - 200 rub  
 
 If you want to support my work - *79044979272* (qiwi, sber, tinkoff)

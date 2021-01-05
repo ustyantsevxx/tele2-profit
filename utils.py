@@ -4,13 +4,13 @@ import os
 from colorama import Fore
 
 
-def print_version():
-    print('tele2-profit v1.2.2')
+def _print_version():
+    print('tele2-profit v1.3.0')
 
 
 def run_main(main):
     try:
-        print_version()
+        _print_version()
         event_loop = asyncio.get_event_loop()
         future = asyncio.ensure_future(main())
         event_loop.run_until_complete(future)
