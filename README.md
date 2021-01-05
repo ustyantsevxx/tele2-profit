@@ -1,4 +1,4 @@
-# Tele2 Profit [![Release](https://img.shields.io/github/v/release/raritetmolodoy/tele2-profit?color=black&label=%20)](https://github.com/raritetmolodoy/tele2-profit/releases)
+# Tele2 Profit [![Release 1.3.0](https://img.shields.io/github/v/release/raritetmolodoy/tele2-profit?color=black&label=%20)](https://github.com/raritetmolodoy/tele2-profit/releases)
 
 Console application that allows you to quickly sell your Tele2 data on their **Market**
 
