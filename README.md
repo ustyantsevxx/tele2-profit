@@ -22,6 +22,7 @@ _От автора:_
 * Quick market listing of your Tele2 data
 * Bumping up lots that haven't been sold
 * Asynchronous queries to _Tele2 API_ allow to perform multiple actions simultaneously
+* __(NEW) Lots auto re-listing after some user-provided interval__
 
 
 ## Demo (v1.0.0 on Windows 10)
