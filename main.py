@@ -2,6 +2,7 @@ import asyncio
 import json
 import math
 import re
+import time
 from datetime import datetime, timedelta
 
 import inquirer as console
@@ -169,7 +170,7 @@ def prepare_old_lots(old_lots: list):
     return lots
 
 
-def print_lot_listing_status(lots: list):
+def print_lot_listing_status(lots: any):
     for lot in lots:
         lot_status = lot['meta']['status']
         if lot_status == 'OK':
@@ -190,7 +191,7 @@ async def sell_prepared_lots(api: Tele2Api, lots: list):
     for lot in lots:
         task = asyncio.ensure_future(api.sell_lot(lot))
         tasks.append(task)
-    print('Listing...')
+    print(Fore.WHITE + 'Listing...')
     lots = await asyncio.gather(*tasks)
     print_lot_listing_status(lots)
 
@@ -224,6 +225,35 @@ async def print_balance(api):
     print(Fore.YELLOW + 'Balance: ' + Fore.MAGENTA + f'{balance} rub.')
 
 
+def input_auto_resell_interval():
+    while True:
+        user_input = input(
+            Fore.MAGENTA + 'Auto-resell interval (seconds): ')
+        try:
+            interval = int(user_input)
+            return interval
+        except ValueError:
+            print(Fore.RED + 'Interval value must be integer!')
+            continue
+
+
+async def activate_timer_if_needed(api: Tele2Api):
+    if console.confirm('Activate lot auto-selling timer?', default=True):
+        interval = input_auto_resell_interval()
+        print(Fore.GREEN + f'Timer activated! Your lots will be relisted every '
+                           f'{interval} sec.')
+        iteration = 1
+        while True:
+            time.sleep(interval)
+            print(Fore.CYAN + f'\nRelisting (iteration #{iteration})...\n')
+            deleted_lots = await delete_active_lots(api)
+            if not len(deleted_lots):
+                print(Fore.GREEN +
+                      'All lots have been sold! Deactivating the timer...')
+                break
+            await menu_again_action(api, deleted_lots)
+
+
 async def main():
     access_token, date, phone_number = load_config()
     async with Tele2Api(phone_number, access_token) as api:
@@ -248,6 +278,8 @@ async def main():
             await menu_again_action(api, deleted_lots)
         elif option == 'Exit':
             pass
+
+        await activate_timer_if_needed(api)
 
 
 if __name__ == '__main__':
