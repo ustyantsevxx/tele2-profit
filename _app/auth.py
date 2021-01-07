@@ -3,9 +3,9 @@ import re
 from datetime import datetime
 
 import inquirer as console
-from colorama import init as colorama_init, Fore
-from api import Tele2Api
-from utils import run_main
+from colorama import Fore
+
+from _app.api import Tele2Api
 
 
 def input_phone_number():
@@ -60,15 +60,3 @@ def save_config(phone_number: str, access_token: str):
             'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }, f, indent=2)
     print(Fore.YELLOW + 'Token saved to ' + Fore.BLUE + 'config.json')
-
-
-async def main():
-    colorama_init(autoreset=True)
-    phone_number = get_phone_number()
-    async with Tele2Api(phone_number) as api:
-        access_token = await get_access_token(api, phone_number)
-    save_config(phone_number, access_token)
-
-
-if __name__ == '__main__':
-    run_main(main)
