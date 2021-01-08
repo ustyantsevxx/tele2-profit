@@ -1,6 +1,6 @@
 from colorama import Fore
 
-from _app.api import Tele2Api
+from app.api import Tele2Api
 
 
 async def print_balance(api):

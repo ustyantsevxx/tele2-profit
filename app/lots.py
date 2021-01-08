@@ -1,9 +1,10 @@
 import math
 import re
+import time
 
 from colorama import Fore
 
-from _app.api import Tele2Api
+from app.api import Tele2Api
 
 
 def input_lots(data_left, display_name, min_amount, max_multiplier,
@@ -110,22 +111,36 @@ def prepare_old_lots(old_lots: list):
     return lots
 
 
-def print_lot_listing_status(lot: any):
-    lot_status = lot['meta']['status']
-    if lot_status == 'OK':
-        color = Fore.YELLOW if lot['data']['trafficType'] == 'voice' \
+def get_if_status_is_ok(response):
+    return True if response['meta']['status'] == 'OK' else False
+
+
+def print_lot_listing_status(response):
+    if get_if_status_is_ok(response):
+        color = Fore.YELLOW if response['data']['trafficType'] == 'voice' \
             else Fore.GREEN
-        amount = lot['data']['volume']['value']
-        uom = lot['data']['volume']['uom']
-        cost = lot['data']['cost']['amount']
+        amount = response['data']['volume']['value']
+        uom = response['data']['volume']['uom']
+        cost = response['data']['cost']['amount']
         print(color +
               f'Successful listing {amount} {uom} for {cost} rub.')
     else:
         print(Fore.RED +
-              f'Error during listing: {lot_status}')
+              f'Error during listing... Trying Again')
+
+
+async def try_sell_infinite_times(api: Tele2Api, lot: any):
+    while True:
+        response = await api.sell_lot(lot)
+        status_is_ok = get_if_status_is_ok(response)
+        print_lot_listing_status(response)
+        if status_is_ok:
+            break
+        else:
+            time.sleep(3)
+            continue
 
 
 async def sell_prepared_lots(api: Tele2Api, lots: list):
     for lot in lots:
-        state = await api.sell_lot(lot)
-        print_lot_listing_status(state)
+        await try_sell_infinite_times(api, lot)

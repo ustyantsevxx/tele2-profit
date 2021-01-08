@@ -1,14 +1,14 @@
 import inquirer as console
 from colorama import Fore
 
-from _app.account import print_rests
-from _app.lots import prepare_lots, sell_prepared_lots, print_prepared_lots, \
+from app.account import print_rests
+from app.lots import prepare_lots, sell_prepared_lots, print_prepared_lots, \
     prepare_old_lots
 
 
-async def display_menu(have_lots_returned: bool):
+async def display_menu(display_again_action: bool):
     choices = [('Prepare new lots to sell', 'new'), 'Exit']
-    if have_lots_returned:
+    if display_again_action:
         choices.insert(0, ('Try selling returned lots again', 'again'))
     return console.list_input('Action', choices=choices)
 

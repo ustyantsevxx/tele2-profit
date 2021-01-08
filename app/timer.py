@@ -3,10 +3,10 @@ import time
 import inquirer as console
 from colorama import Fore
 
-from _app.account import print_balance
-from _app.api import Tele2Api
-from _app.menu import menu_again_action
-from _app.startup import delete_active_lots
+from app.account import print_balance
+from app.api import Tele2Api
+from app.menu import menu_again_action
+from app.startup import delete_active_lots
 
 
 def input_auto_resell_interval():
