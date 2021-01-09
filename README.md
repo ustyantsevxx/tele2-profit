@@ -1,4 +1,4 @@
-# Tele2 Profit [![Release](https://img.shields.io/github/v/release/raritetmolodoy/tele2-profit?color=black&label=%20)](https://github.com/raritetmolodoy/tele2-profit/releases)
+# Tele2 Profit [![Release 1.3.0](https://img.shields.io/github/v/release/raritetmolodoy/tele2-profit?color=black&label=%20)](https://github.com/raritetmolodoy/tele2-profit/releases)
 
 Console application that allows you to quickly sell your Tele2 data on their **Market**
 
@@ -22,6 +22,7 @@ _От автора:_
 * Quick market listing of your Tele2 data
 * Bumping up lots that haven't been sold
 * Asynchronous queries to _Tele2 API_ allow to perform multiple actions simultaneously
+* __[v1.3] Lots auto re-listing after some user-provided interval__
 
 
 ## Demo (v1.0.0 on Windows 10)
