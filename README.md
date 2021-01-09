@@ -9,24 +9,38 @@ _От автора:_
 Я не несу ответственности за ваши номера (если они улетят в бан или еще чего по-хуже).  
 Скрипт не делает ничего запрещенного, а лишь "нажимает кнопочки, которые вы могли
 бы нажать в их приложении, потратив в 10 (да-да) раз больше времени".  
+
 Скрипт не ворует данные и не каким образом не взаимодействует ни с чем-либо кроме
 оффициального (но не публичного) API Tele2.
+Простое консольное прилоджение сделано лишь для того, чтобы у пользователя не 
+возникало сомнений в честности действий, выполняемых скриптом. 
+Вы можете посмотреть исходники и подредактировать код, если в том есть неоходимость.
+Подобные приложения с веб-интерфейсом и т.п вынуждены хранить ваши авторизационные токены на своих серверах,
+что может привести с потере доступа к аккаунту.
+Т.к существует возможность бесконечного продления токена без необходимости 
+повторного ввода СМС-кода, ввели смс в типичное мошенническое веб-приложение
+1 раз и злоумышленник получит доступ к вашему аккаунту НАВСЕГДА (да).
+ 
+
 Если возникли какие-либо проблемы в работе - откройте обсуждение на вкладке Issues и,
-если, нашли решение, предложите автору, буду очень признателен. Так как скрипт очень
-чувствителен к региону, из которого он запускается, проблемы возникнуть могут, и не факт,
-что конкретно ваша проблема вообще решаема (например, старый тариф без поддержки
-Маркета и т.п). Спасибо за понимание)
+если, нашли решение, приложите свои комментарии. Так как скрипт очень
+чувствителен к региону, из которого он запускается, могут возникнуть проблемы в работе, и не факт,
+что конкретно ваша проблема решаема (например, старый тариф без поддержки
+Маркета и т.п). 
+
+Спасибо за понимание)
 
 
 ## Features
 * Quick market listing of your Tele2 data
 * Bumping up lots that haven't been sold
 * Asynchronous queries to _Tele2 API_ allow to perform multiple actions simultaneously
-* __[v1.3] Lots auto re-listing after some user-provided interval__
+* Lots auto re-listing after some user-provided interval
+* **[v2.0+] Token auto-refreshing without extra SMS inputs**
 
 
-## Demo (v1.0.0 on Windows 10)
-![imgur demo gif](https://i.imgur.com/xKTTRDS.gif)
+## Demo (v2.0.0 on Windows 10 Terminal)
+![imgur demo gif](https://i.imgur.com/Ciy2tp3.gif)
 
 
 ## Installation (basic - *Windows x64 only [x32 work in progress]*)
@@ -62,9 +76,9 @@ and download **zip**-archive (tele2-profit@\<version\>.zip)
 
 
 ## Usage
-1. Login with running `python auth.py` (or auth.exe if built version). Access token works 4 hours, then it needs to be updated.  
-**note: access-token saves on your PC _only_, in `./config.json` file** 
-2. Run `python main.py` (or main.exe if built version) and select action.
+Run `python main.py` (or main.exe if built version), login, and select action.
+
+**note: Access-token saves on your PC _only_, in `./config.json` file** 
 
 ### FYI: Current Tele2 market lot requirements
 
@@ -84,12 +98,8 @@ For example: `60 80` - 60 minutes (or gb) will be listed for 80 rub.
 For example: `68` -  68 minutes (or gb) will be listed with **minimum** possible price *(in this case - 55 rub if minutes, 1020 rub if gb)*.  
 When done leave input field empty (just hit enter) and you will jump to the next part.
 
-
-## TODO
-* Use refresh token to support longer auth persistence (currently 4 hours)
-
 ## Donations
-Special thanks to my donators:
+Huge thanks to my donors:
 * Кирилл - 100 rub
 * Alex - 300 rub
 * Никита - 300 rub
