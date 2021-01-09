@@ -18,18 +18,28 @@ async def login_pipeline(phone_number: str):
         return access_token, refresh_token
 
 
+async def try_refresh_tokens_or_get_new(api: Tele2Api, phone_number: str,
+                                        refresh_token: str):
+    try:
+        access_token, refresh_token = await api.refresh_tokens(refresh_token)
+        return access_token, refresh_token
+    except TypeError:
+        print(
+            Fore.RED + 'Your auth expired. Sending new SMS to '
+            + Fore.GREEN + phone_number)
+        access_token, refresh_token = await login_pipeline(phone_number)
+        return access_token, refresh_token
+
+
 async def authenticate(phone_number: str, access_token: str,
                        refresh_token: str):
     async with Tele2Api(phone_number, access_token, refresh_token) as api:
         is_authorized = await api.check_if_authorized()
         if not is_authorized:
-            try:
-                access_token, refresh_token = await api.refresh_tokens(
-                    refresh_token)
-            except TypeError:
-                print(
-                    Fore.RED + 'Your auth expired. Sending new SMS to ' + Fore.GREEN + phone_number)
-                access_token, refresh_token = await login_pipeline(phone_number)
+            access_token, refresh_token = await try_refresh_tokens_or_get_new(
+                api,
+                phone_number,
+                refresh_token)
             write_config_to_file(phone_number, access_token, refresh_token)
             await authenticate(phone_number, access_token, refresh_token)
         return access_token, refresh_token
