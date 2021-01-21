@@ -5,6 +5,13 @@ Console application that allows you to quickly sell your Tele2 data on their **M
 
 
 ## Disclaimer
+**!!!!!!!!!!!!!!!!!!!!ВАЖНАЯ ИНФОРМАЦИЯ!!!!!!!!!!!!!!!!!!!!!!!!!   
+Перевыставление лотов больше не работает.  
+Выставить лоты теперь можно только один раз.  
+Данный скрипт больше не имеет смысла.   
+Поддерживать скрипт я больше не буду, пока не вернут перевыставление.  
+ВСЕМ СПАСИБО ЗА ИСПОЛЬЗОВАНИЕ И ПОЖЕРТВОВАНИЯ!)**
+
 _От автора:_  
 Я не несу ответственности за ваши номера (если они улетят в бан или еще чего по-хуже).  
 Скрипт не делает ничего запрещенного, а лишь "нажимает кнопочки, которые вы могли
@@ -43,7 +50,7 @@ _От автора:_
 ![imgur demo gif](https://i.imgur.com/Ciy2tp3.gif)
 
 
-## Installation (basic - *Windows x64 only [x32 work in progress]*)
+## Installation (basic - *Windows x64 only*)
 #### Steps:
 1. Go to [latest release](https://github.com/raritetmolodoy/tele2-profit/releases/latest)
 and download **zip**-archive (tele2-profit@\<version\>.zip)
