@@ -76,4 +76,5 @@ Huge thanks to my donors:
 * Никита - 300 rub
 * Михаил - 200 rub  
 
-If you want to support my work contact me on Telegram ([t.me/ustyantsevxx](https://t.me/ustyantsevxx)).
+## Contact me
+If you have any questions or would like to support my work — contact me on **Telegram** ([t.me/ustyantsevxx](https://t.me/ustyantsevxx)).
