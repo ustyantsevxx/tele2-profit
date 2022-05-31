@@ -3,7 +3,6 @@
 Console application that allows you to quickly sell your Tele2 data on their **Market**
 
 
-
 ## Disclaimer
 **!!!!!!!!!!!!!!!!!!!!ВАЖНАЯ ИНФОРМАЦИЯ!!!!!!!!!!!!!!!!!!!!!!!!!   
 Перевыставление лотов больше не работает.  
