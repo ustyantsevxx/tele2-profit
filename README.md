@@ -69,12 +69,11 @@ For example: `60 80` - 60 minutes (or gb) will be listed for 80 rub.
 For example: `68` -  68 minutes (or gb) will be listed with **minimum** possible price *(in this case - 55 rub if minutes, 1020 rub if gb)*.  
 When done leave input field empty (just hit enter) and you will jump to the next part.
 
-## Donations
-Huge thanks to my donors:
-* Кирилл - 100 rub
-* Alex - 300 rub
-* Никита - 300 rub
-* Михаил - 200 rub  
+## These people supported my work with donations. Huge thanks
+* Кирилл
+* Alex
+* Никита
+* Михаил
 
 ## Contact me
 If you have any questions or would like to support my work — contact me on **Telegram** ([t.me/ustyantsevxx](https://t.me/ustyantsevxx)).
